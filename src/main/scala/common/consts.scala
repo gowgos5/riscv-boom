@@ -258,6 +258,10 @@ trait ScalarOpConstants
 
   val uopMOV       = 109.U(UOPC_SZ.W) // conditional mov decoded from "add rd, x0, rs2"
 
+  // reconvergence
+  val uopSBI       = 110.U(UOPC_SZ.W) // setBranchId
+  val uopSDP       = 111.U(UOPC_SZ.W) // setDependency
+
   // The Bubble Instruction (Machine generated NOP)
   // Insert (XOR x0,x0,x0) which is different from software compiler
   // generated NOPs which are (ADDI x0, x0, 0).
