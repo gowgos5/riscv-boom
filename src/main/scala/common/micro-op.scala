@@ -141,6 +141,10 @@ class MicroOp(implicit p: Parameters) extends BoomBundle
   // What prediction structure provides the prediction TO this op
   val debug_tsrc       = UInt(BSRC_SZ.W)
 
+  // reconvergence
+  val is_sbi           = Bool()
+  val is_sdp           = Bool()
+
   // Do we allocate a branch tag for this?
   // SFB branches don't get a mask, they get a predicate bit
   def allocate_brtag   = (is_br && !is_sfb) || is_jalr

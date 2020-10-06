@@ -587,6 +587,10 @@ class DecodeUnit(implicit p: Parameters) extends BoomModule
   uop.is_unique  := cs.inst_unique
   uop.flush_on_commit := cs.flush_on_commit || (csr_en && !csr_ren && io.csr_decode.write_flush)
 
+  // reconvergence
+  uop.is_sbi    := uop.uopc === uopSBI
+  uop.is_sdp    := uop.uopc === uopSDP
+
   uop.bypassable   := cs.bypassable
 
   //-------------------------------------------------------------
