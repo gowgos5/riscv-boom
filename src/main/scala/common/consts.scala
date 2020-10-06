@@ -24,6 +24,8 @@ import freechips.rocketchip.rocket.RVCExpander
 trait IQType
 {
   val IQT_SZ  = 3
+  // reconvergence
+  val IQT_X   = 0.U(IQT_SZ.W)
   val IQT_INT = 1.U(IQT_SZ.W)
   val IQT_MEM = 2.U(IQT_SZ.W)
   val IQT_FP  = 4.U(IQT_SZ.W)

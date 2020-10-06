@@ -7,13 +7,11 @@ package boom.exu
 
 import chisel3._
 import chisel3.util._
-
 import freechips.rocketchip.config.Parameters
 import freechips.rocketchip.rocket.Instructions._
 import freechips.rocketchip.rocket.RVCExpander
 import freechips.rocketchip.rocket.{CSR,Causes}
 import freechips.rocketchip.util.{uintToBitPat,UIntIsOneOf}
-
 import FUConstants._
 import boom.common._
 import boom.util._
@@ -444,8 +442,26 @@ object RoCCDecode extends DecodeConstants
   )
 }
 
-
-
+/**
+ * Reconvergence Decode constants
+ */
+object ReconvergenceDecode extends DecodeConstants
+{
+           //                                                                  frs3_en                        wakeup_delay
+           //     is val inst?                                                 |  imm sel                     |    bypassable (aka, known/fixed latency)
+           //     |  is fp inst?                                               |  |     uses_ldq              |    |  is_br
+           //     |  |  is single-prec?                        rs1 regtype     |  |     |  uses_stq           |    |  |
+           //     |  |  |  micro-code                          |       rs2 type|  |     |  |  is_amo          |    |  |
+           //     |  |  |  |         iq-type  func unit        |       |       |  |     |  |  |  is_fence     |    |  |
+           //     |  |  |  |         |        |                |       |       |  |     |  |  |  |  is_fencei |    |  |  is breakpoint or ecall?
+           //     |  |  |  |         |        |        dst     |       |       |  |     |  |  |  |  |  mem    |    |  |  |  is unique? (clear pipeline for it)
+           //     |  |  |  |         |        |        regtype |       |       |  |     |  |  |  |  |  cmd    |    |  |  |  |  flush on commit
+           //     |  |  |  |         |        |        |       |       |       |  |     |  |  |  |  |  |      |    |  |  |  |  |  csr cmd
+  val table: Array[(BitPat, List[BitPat])] = Array(//  |       |       |       |  |     |  |  |  |  |  |      |    |  |  |  |  |  |
+    SBI   -> List(Y, N, X, uopSBI,   IQT_X,   FU_X,    RT_X,   RT_X,   RT_X,   N, IS_X, N, N, N, N, N, M_X,   0.U, N, N, N, N, N, CSR.N),
+    SDP   -> List(Y, N, X, uopSDP,   IQT_X,   FU_X,    RT_X,   RT_X,   RT_X,   N, IS_X, N, N, N, N, N, M_X,   0.U, N, N, N, N, N, CSR.N),
+  )
+}
 
 
 /**
@@ -478,6 +494,8 @@ class DecodeUnit(implicit p: Parameters) extends BoomModule
   if (usingFPU) decode_table ++= FDecode.table
   if (usingFPU && usingFDivSqrt) decode_table ++= FDivSqrtDecode.table
   if (usingRoCC) decode_table ++= RoCCDecode.table
+  // reconvergence
+  decode_table += ReconvergenceDecode.table
   decode_table ++= (if (xLen == 64) X64Decode.table else X32Decode.table)
 
   val inst = uop.inst
