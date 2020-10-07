@@ -458,8 +458,8 @@ object ReconvergenceDecode extends DecodeConstants
            //     |  |  |  |         |        |        regtype |       |       |  |     |  |  |  |  |  cmd    |    |  |  |  |  flush on commit
            //     |  |  |  |         |        |        |       |       |       |  |     |  |  |  |  |  |      |    |  |  |  |  |  csr cmd
   val table: Array[(BitPat, List[BitPat])] = Array(//  |       |       |       |  |     |  |  |  |  |  |      |    |  |  |  |  |  |
-    SBI   -> List(Y, N, X, uopSBI,   IQT_X,   FU_X,    RT_X,   RT_X,   RT_X,   N, IS_X, N, N, N, N, N, M_X,   0.U, N, N, N, N, N, CSR.N),
-    SDP   -> List(Y, N, X, uopSDP,   IQT_X,   FU_X,    RT_X,   RT_X,   RT_X,   N, IS_X, N, N, N, N, N, M_X,   0.U, N, N, N, N, N, CSR.N),
+    SBI   -> List(Y, N, X, uopSBI,   IQT_X,   FU_X,    RT_X,   RT_X,   RT_X,   N, IS_I, N, N, N, N, N, M_X,   0.U, N, N, N, N, N, CSR.N),
+    SDP   -> List(Y, N, X, uopSDP,   IQT_X,   FU_X,    RT_X,   RT_X,   RT_X,   N, IS_I, N, N, N, N, N, M_X,   0.U, N, N, N, N, N, CSR.N),
   )
 }
 
