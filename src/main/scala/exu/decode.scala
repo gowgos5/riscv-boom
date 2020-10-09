@@ -495,7 +495,7 @@ class DecodeUnit(implicit p: Parameters) extends BoomModule
   if (usingFPU && usingFDivSqrt) decode_table ++= FDivSqrtDecode.table
   if (usingRoCC) decode_table ++= RoCCDecode.table
   // reconvergence
-  decode_table += ReconvergenceDecode.table
+  decode_table ++= ReconvergenceDecode.table
   decode_table ++= (if (xLen == 64) X64Decode.table else X32Decode.table)
 
   val inst = uop.inst
