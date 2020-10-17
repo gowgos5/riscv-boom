@@ -505,6 +505,13 @@ class BoomCore(implicit p: Parameters) extends BoomModule
     decode_units(w).io.interrupt_cause := csr.io.interrupt_cause
 
     dec_uops(w) := decode_units(w).io.deq.uop
+
+    // reconvergence
+    when (decode_units(w).io.deq.uop.is_sbi) {
+      printf("setBranchId instruction detected...")
+    }.elsewhen(decode_units(w).io.deq.uop.is_sdp) {
+      printf("setDependency instruction detected...")
+    }
   }
 
   //-------------------------------------------------------------
